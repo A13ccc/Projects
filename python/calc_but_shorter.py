@@ -27,9 +27,17 @@ def calc():
             else:
                 op4 = input("Fourth Operation: ")
                 n5 = input("Fifth number: ")
-                print("Calculating...")
-                ans4 = eval(n1 + op1 + n2 + op2 + n3 + op3 + n4 + op4 + n5)
-                print(ans4)
+                q4 = input("More? (y/n):")
+                if q4 == "n": 
+                    print("Calculating...")
+                    ans4 = eval(n1 + op1 + n2 + op2 + n3 + op3 + n4 + op4 + n5)
+                    print(ans4)
+                else:
+                    op5 = input("Fifth Operation: ")
+                    n5 = input("Sixth number: ")
+                    print("Calculating...")
+                    ans5 = eval(n1 + op1 + n2 + op2 + n3 + op3 + n4 + op4 + n5 + op5 + n6)
+                    print(ans5)
 
 
 calc()
