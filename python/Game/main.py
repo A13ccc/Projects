@@ -40,6 +40,13 @@ player_sprite.set_colorkey((255, 255, 255))
 # Scale the sprite
 scaled_player_sprite = pygame.transform.scale(player_sprite, (32, 32))
 
+# Def Gravity and Velocity
+player_velocity = pygame.Vector2(0, 0)
+gravity = 0.5
+
+# Def Momentum
+momentum = 0.1
+
 # Game Loop
 running = True
 while running:
@@ -54,10 +61,24 @@ while running:
         player_pos.x -= 5
     if keys[pygame.K_RIGHT]:
         player_pos.x += 5
-    if keys[pygame.K_UP]:
-        player_pos.y -= 5
-    if keys[pygame.K_DOWN]:
-        player_pos.y += 5
+    if keys[pygame.K_SPACE]:
+        if player_pos.y == screen.get_height() - scaled_player_sprite.get_height():
+            player_velocity.y = -10
+
+    # Apply Momentum
+    if player_velocity.x > 0:
+        player_velocity.x = max(0, player_velocity.x - momentum)
+    elif player_velocity.x < 0:
+        player_velocity.x = min(0, player_velocity.x + momentum)
+
+    # Gravity
+    player_velocity.y += gravity
+    player_pos.y += player_velocity.y
+
+    # Check Boundaries
+    if player_pos.y > screen.get_height() - scaled_player_sprite.get_height():
+        player_pos.y = screen.get_height() - scaled_player_sprite.get_height()
+        player_velocity.y = 0
 
     # Event Loop
     for event in pygame.event.get():
