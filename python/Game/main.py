@@ -71,7 +71,7 @@ while running:
     elif player_velocity.x < 0:
         player_velocity.x = min(0, player_velocity.x + momentum)
 
-    # Gravity
+    # Gravity t
     player_velocity.y += gravity
     player_pos.y += player_velocity.y
 
