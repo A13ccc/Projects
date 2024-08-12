@@ -5,6 +5,11 @@ pygame.init()
 # Def all Variables
 keys = pygame.key.get_pressed()
 
+# Set screen
+WIDTH, HEIGHT = 720, 480
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Jump Game")
+
 
 # Base Sprite Class
 class Sprite:
@@ -63,11 +68,9 @@ class Bullet(Sprite):
         else:
             self.pos.x += 10
 
+    def draw(self, screen):
+        screen.blit(self.scaled_sprite, self.pos)
 
-# Set Screen
-WIDTH, HEIGHT = 720, 480
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Jump Game")
 
 # Def Colors
 black = (0, 0, 0)
@@ -131,9 +134,9 @@ while running:
 
     # Apply Momentum
     if player_velocity.x > 0:
-        player_velocity.x = max(0, player_velocity.x - momentum)
+        player_velocity.x = max(0, int(player_velocity.x) - int(momentum))
     elif player_velocity.x < 0:
-        player_velocity.x = min(0, player_velocity.x + momentum)
+        player_velocity.x = min(0, int(player_velocity.x) + int(momentum))
 
     # Apply velocity to position
     player.pos += player_velocity
