@@ -26,13 +26,14 @@ class Sprite:
         screen.blit(self.scaled_sprite, self.pos)
 
 
-# Bullet Class
-class Bullet(Sprite):
+# Projectile Class
+class Projectile:
     def __init__(self, file_name, x, y, width, height, scale, direction):
-        super().__init__(file_name, x, y, width, height, scale)
+        self.sprite = pygame.image.load(file_name).convert()
+        self.scaled_sprite = pygame.transform.scale(self.sprite, (scale, scale))
+        self.pos = pygame.Vector2(0, 0)
+        self.velocity = pygame.Vector2(0, 0)
         self.direction = direction
-        self.pos = pygame.Vector2(x, y)
-        print(f"Bullet sprite loaded: {file_name}")
 
     def move(self):
         if self.direction == 1:
@@ -42,13 +43,30 @@ class Bullet(Sprite):
 
     def draw(self, screen):
         screen.blit(self.scaled_sprite, self.pos)
-        print(f"Drawing bullet at position: {self.pos}")
+
+
+# Bullet Class
+class Bullet(Projectile):
+    def __init__(self, file_name, x, y, width, height, scale, direction):
+        super().__init__(file_name, x, y, width, height, scale, direction)
+        self.pos.x = x
+        self.pos.y = y
+
+    def move(self):
+        if self.direction == 1:
+            self.pos.x += 5
+        else:
+            self.pos.x -= 5
+
+    def draw(self, screen):
+        screen.blit(self.scaled_sprite, self.pos)
 
 
 # Player Class
 class Player(Sprite):
     def __init__(self, file_name, x, y, width, height, scale):
         super().__init__(file_name, x, y, width, height, scale)
+        self.sprite.set_colorkey((255, 255, 255))
         self.is_jumping = False
         self.bullets = []
 
@@ -66,7 +84,7 @@ class Player(Sprite):
     def shoot(self):
         bullet_x = self.pos.x
         bullet_y = self.pos.y
-        bullet = Bullet("./sprites/bullet/bullet.png", bullet_x, bullet_y, 16, 16, 32, self.facing)
+        bullet = Bullet("./sprites/bullet/bullet.png", bullet_x, bullet_y, 16, 16, 2, self.facing)
         self.bullets.append(bullet)
         print(f"Bullet created at position: {bullet.pos}")
 
@@ -86,7 +104,7 @@ class Enemy(Sprite):
 
     def move(self):
 
-        if self.pos.y == 570:
+        if self.pos.y == 566:
             self.pos.x += self.direction * 4.6
 
             if self.pos.x <= 5:
@@ -103,8 +121,8 @@ class Game:
         self.screen = pygame.display.set_mode((self.width, self.height))
         self.clock = pygame.time.Clock()
         self.running = True
-        self.player = Player("./sprites/player/SpriteSheet.png", 0, 0, 16, 16, 32)
-        self.enemies = [Enemy("./sprites/enemy/SpriteSheet.png", 0, 0, 16, 16, 32) for _ in range(5)]
+        self.player = Player("./sprites/player/standing.png", 0, 0, 16, 16, 34)
+        self.enemies = [Enemy("./sprites/enemy/SpriteSheet.png", 0, 0, 16, 16, 34) for _ in range(5)]
         self.bullets = []
 
     def run(self):
@@ -115,7 +133,7 @@ class Game:
             self.draw()
             self.gravity()
             self.boundaries()
-            if self.player.pos.y == 570:
+            if self.player.pos.y == 566:
                 self.player.is_jumping = False
 
             keys = pygame.key.get_pressed()
@@ -171,25 +189,25 @@ class Game:
             enemy.pos.y -= enemy.velocity.y
 
     def boundaries(self):
-        if self.player.pos.y > 570:
-            self.player.pos.y = 570
+        if self.player.pos.y > 566:
+            self.player.pos.y = 566
             self.player.velocity.y = 0
         if self.player.pos.y < 0:
             self.player.pos.y = 0
             self.player.velocity.y = 0
-        if self.player.pos.x >= 765:
-            self.player.pos.x = 765
+        if self.player.pos.x >= 769:
+            self.player.pos.x = 769
         if self.player.pos.x <= 5:
             self.player.pos.x = 5
         for enemy in self.enemies:
-            if enemy.pos.y > 570:
-                enemy.pos.y = 570
+            if enemy.pos.y > 566:
+                enemy.pos.y = 566
                 enemy.velocity.y = 0
             if enemy.pos.y < 0:
                 enemy.pos.y = 0
                 enemy.velocity.y = 0
-            if enemy.pos.x >= 765:
-                enemy.pos.x = 765
+            if enemy.pos.x >= 769:
+                enemy.pos.x = 769
             if enemy.pos.x <= 5:
                 enemy.pos.x = 5
 
