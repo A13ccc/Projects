@@ -31,6 +31,7 @@ class Bullet(Sprite):
     def __init__(self, file_name, x, y, width, height, scale, direction):
         super().__init__(file_name, x, y, width, height, scale)
         self.direction = direction
+        self.pos = pygame.Vector2(x, y)
         print(f"Bullet sprite loaded: {file_name}")
 
     def move(self):
@@ -104,6 +105,7 @@ class Game:
         self.running = True
         self.player = Player("./sprites/player/SpriteSheet.png", 0, 0, 16, 16, 32)
         self.enemies = [Enemy("./sprites/enemy/SpriteSheet.png", 0, 0, 16, 16, 32) for _ in range(5)]
+        self.bullets = []
 
     def run(self):
         last_projectile_time = 0
@@ -122,9 +124,23 @@ class Game:
                 if current_time - last_projectile_time >= 300:
                     print("Shooting")
                     last_projectile_time = current_time
-                    self.player.shoot()
+                    self.shoot()
 
-            self.player.update_bullets(self.screen)
+            self.update_bullets(self.screen)
+
+    def shoot(self):
+        bullet_x = self.player.pos.x
+        bullet_y = self.player.pos.y
+        bullet = Bullet("./sprites/bullet/bullet.png", bullet_x, bullet_y, 16, 16, 32, self.player.facing)
+        self.bullets.append(bullet)
+        print(f"Bullet created at position: {bullet.pos}")
+
+    def update_bullets(self, screen):
+        for bullet in self.bullets:
+            bullet.move()
+            bullet.draw(screen)
+            print(f"Bullet position: {bullet.pos}")
+        self.bullets = [bullet for bullet in self.bullets if 0 < bullet.pos.x < screen.get_width()]
 
     def events(self):
         for event in pygame.event.get():
@@ -138,14 +154,14 @@ class Game:
             enemy.move()
 
     def draw(self):
-        self.screen.fill((0, 0, 90))
+        self.screen.fill((5, 0, 20))
         self.player.draw(self.screen)
         for enemy in self.enemies:
             enemy.draw(self.screen)
         for bullet in self.player.bullets:
             bullet.draw(self.screen)
-        pygame.display.flip()
-        self.clock.tick(70)
+        pygame.display.update()
+        self.clock.tick(80)
 
     def gravity(self):
         self.player.velocity.y -= 0.5
